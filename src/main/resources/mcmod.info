@@ -1,0 +1,16 @@
+[
+{
+  "modid": "shieldbreak",
+  "name": "ShieldBreak",
+  "description": "Shield OP pls nerf.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Fonnymunkey"],
+  "credits": "",
+  "logoFile": "title.png",
+  "screenshots": [],
+  "dependencies": []
+}
+]
