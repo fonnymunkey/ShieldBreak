@@ -58,6 +58,10 @@ public class ModConfig {
 		@Config.Comment("How long should the cooldown be if a weapon that can break shields bypasses the shield. (Ex. Axe and Halberd)")
 		@Config.Name("Shield Bypass Cooldown")
 		public int shieldBypassCooldown= 100;
+		
+		@Config.Comment("Always reset active hand after shield hit? (Fixes exploit with using handheld gui's to attack while shielding)")
+		@Config.Name("Always Reset Active Hand")
+		public boolean alwaysResetActiveHand= true;
 	}
 	
 	@Mod.EventBusSubscriber(modid = ShieldBreak.MODID)

@@ -31,7 +31,7 @@ public class EventHandler
 	@SubscribeEvent(priority = EventPriority.LOWEST)
 	public void onLivingAttack(LivingAttackEvent event) {
 		if(event.getEntityLiving().world.isRemote || event.isCanceled() || !(event.getEntityLiving() instanceof EntityPlayer) || !(event.getSource().getTrueSource() instanceof EntityLivingBase) || event.getAmount() <= 0.0F) return;
-
+		
 		World world = event.getEntityLiving().world;
 		DamageSource damageSource = event.getSource();
 		EntityPlayer player = (EntityPlayer)event.getEntityLiving();
@@ -84,6 +84,9 @@ public class EventHandler
 				((EntityPlayerMP)attacker).connection.sendPacket(new SPacketEntityVelocity(attacker));
 			}
 		}
+		
+		//Causes slight momentary visual wierdness with shield after hit, but seems to fix gui exploit?
+		if(ModConfig.server.alwaysResetActiveHand) player.resetActiveHand();
 	}
 	
 	@SubscribeEvent(priority = EventPriority.LOWEST)
