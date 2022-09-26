@@ -1,11 +1,18 @@
 package shieldbreak.handlers;
 
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraftforge.common.config.Config;
 import net.minecraftforge.common.config.ConfigManager;
 import net.minecraftforge.fml.client.event.ConfigChangedEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
+import org.apache.logging.log4j.Level;
 import shieldbreak.core.ShieldBreak;
+import shieldbreak.util.PotionEntry;
+
+import javax.annotation.Nullable;
+import java.util.Arrays;
 
 @Config(modid = ShieldBreak.MODID)
 public class ModConfig {
@@ -15,6 +22,11 @@ public class ModConfig {
 	public static final ServerConfig server = new ServerConfig();
 	
 	public static class ServerConfig{
+
+		private PotionEntry attackerParry = null;
+		private PotionEntry defenderParry = null;
+		private PotionEntry attackerBreak = null;
+		private PotionEntry defenderBreak = null;
 		@Config.Comment("Minimum amount of damage any shield will withstand before chance of cooldown.")
 		@Config.Name("Damage Minimum Threshold")
 		public float damageMinimumThreshold= 1.0F;
@@ -62,13 +74,98 @@ public class ModConfig {
 		@Config.Comment("Always reset active hand after shield hit? (Fixes exploit with using handheld gui's to attack while shielding)")
 		@Config.Name("Always Reset Active Hand")
 		public boolean alwaysResetActiveHand= true;
+
+		@Config.Comment("Potion Effect to apply to an attacker on a parry. (Potion,Duration,Amplifier)")
+		@Config.Name("Potion Effect Attacker Parry")
+		public String potionEffectAttackerParry = "";
+
+		@Config.Comment("Potion Effect to apply to a defender on a parry. (Potion,Duration,Amplifier)")
+		@Config.Name("Potion Effect Defender Parry")
+		public String potionEffectDefenderParry = "";
+
+		@Config.Comment("Potion Effect to apply to an attacker on a break. (Potion,Duration,Amplifier)")
+		@Config.Name("Potion Effect Attacker Break")
+		public String potionEffectAttackerBreak = "";
+
+		@Config.Comment("Potion Effect to apply to a defender on a break. (Potion,Duration,Amplifier)")
+		@Config.Name("Potion Effect Defender Break")
+		public String potionEffectDefenderBreak = "";
+
+		public void resetEffectCache() {
+			attackerParry=null;
+			attackerBreak=null;
+			defenderParry=null;
+			defenderBreak=null;
+		}
+
+		@Nullable
+		public PotionEntry getEffectAttackerParry() {
+			if(attackerParry!=null) return attackerParry;
+			if(!potionEffectAttackerParry.isEmpty()) {
+				attackerParry = getPotionEffectFromString(cleanEntry(potionEffectAttackerParry));
+				return attackerParry;
+			}
+			return null;
+		}
+		@Nullable
+		public PotionEntry getEffectDefenderParry() {
+			if(defenderParry!=null) return defenderParry;
+			if(!potionEffectDefenderParry.isEmpty()) {
+				defenderParry = getPotionEffectFromString(cleanEntry(potionEffectDefenderParry));
+				return defenderParry;
+			}
+			return null;
+		}
+		@Nullable
+		public PotionEntry getEffectAttackerBreak() {
+			if(attackerBreak!=null) return attackerBreak;
+			if(!potionEffectAttackerBreak.isEmpty()) {
+				attackerBreak = getPotionEffectFromString(cleanEntry(potionEffectAttackerBreak));
+				return attackerBreak;
+			}
+			return null;
+		}
+		@Nullable
+		public PotionEntry getEffectDefenderBreak() {
+			if(defenderBreak!=null) return defenderBreak;
+			if(!potionEffectDefenderBreak.isEmpty()) {
+				defenderBreak = getPotionEffectFromString(cleanEntry(potionEffectDefenderBreak));
+				return defenderBreak;
+			}
+			return null;
+		}
+
+		@Nullable
+		private PotionEntry getPotionEffectFromString(String[] entry) {
+			try {
+				Potion potion = Potion.getPotionFromResourceLocation(entry[0]);
+				if(potion==null) {
+					ShieldBreak.logger.log(Level.WARN, "Invalid potion name: " + entry[0]);
+					return null;
+				}
+				int duration = Integer.parseInt(entry[1]);
+				int amplifier = Integer.parseInt(entry[2]);
+				return new PotionEntry(potion, duration, amplifier);
+			}
+			catch(Exception ex) {
+				ShieldBreak.logger.log(Level.WARN, "Failed to parse config entry: " + ex);
+				return null;
+			}
+		}
+
+		private String[] cleanEntry(String entry) {
+			return Arrays.stream(entry.split(",")).map(String::trim).toArray(String[]::new);
+		}
 	}
 	
 	@Mod.EventBusSubscriber(modid = ShieldBreak.MODID)
 	private static class EventHandler{
 		@SubscribeEvent
 		public static void onConfigChanged(ConfigChangedEvent.OnConfigChangedEvent event) {
-			if(event.getModID().equals(ShieldBreak.MODID)) ConfigManager.sync(ShieldBreak.MODID, Config.Type.INSTANCE);
+			if(event.getModID().equals(ShieldBreak.MODID)) {
+				ModConfig.server.resetEffectCache();
+				ConfigManager.sync(ShieldBreak.MODID, Config.Type.INSTANCE);
+			}
 		}
 	}
 }
