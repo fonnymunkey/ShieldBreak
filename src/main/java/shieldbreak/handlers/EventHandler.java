@@ -32,6 +32,8 @@ import org.apache.logging.log4j.Level;
 import shieldbreak.core.ShieldBreak;
 import shieldbreak.util.PotionEntry;
 
+import java.util.List;
+
 public class EventHandler
 {
 	@SubscribeEvent(priority = EventPriority.LOWEST)
@@ -69,20 +71,21 @@ public class EventHandler
 		int parryTicks = player.getItemInUseMaxCount();
 		float shieldDurability = (float)((playerItem.getMaxDamage() > 0) ? playerItem.getMaxDamage() : ModConfig.server.unbreakableShieldDurability);
 		float shieldProtection = Math.max(ModConfig.server.damageMinimumThreshold, Math.min(ModConfig.server.damageMaximumThreshold, shieldDurability/ModConfig.server.damageDurabilityScaling));
-		float knockbackPower = 0.5F;
+		float knockbackPower = ModConfig.server.knockbackNormal;
 		boolean parry = false;
 		boolean broken = false;
 
 		//Parry
 		if(parryTicks < (ModConfig.server.parryTickRange+ModConfig.server.shieldRaiseTickDelay)) {
 			world.playSound(null, player.getPosition(), SoundEvents.ITEM_SHIELD_BLOCK, SoundCategory.PLAYERS, 1.0F, 0.3F);
-			knockbackPower = 1.0F;
+			knockbackPower = ModConfig.server.knockbackParry;
 			parry = true;
 		}
 		else if(damageAmount > shieldProtection) {//Shield broken by damage
 			player.getCooldownTracker().setCooldown(playerItem.getItem(), (int)Math.max(ModConfig.server.cooldownTicksMinimum, Math.min(ModConfig.server.cooldownTicksMaximum, ((damageAmount-shieldProtection)*ModConfig.server.cooldownTicksScaling))));
 			player.resetActiveHand();
 			world.setEntityState(player, (byte)30);
+			knockbackPower = ModConfig.server.knockbackBreak;
 			broken = true;
 		}
 		else {//Normal block
@@ -116,8 +119,8 @@ public class EventHandler
 	}
 
 	private void doPotionEffects(EntityLivingBase attacker, EntityLivingBase defender, boolean parry) {
-		PotionEntry attackerEffect;
-		PotionEntry defenderEffect;
+		List<PotionEntry> attackerEffect;
+		List<PotionEntry> defenderEffect;
 
 		if(parry) {
 			attackerEffect = ModConfig.server.getEffectAttackerParry();
@@ -129,10 +132,14 @@ public class EventHandler
 		}
 
 		if(attackerEffect!=null) {
-			attacker.addPotionEffect(new PotionEffect(attackerEffect.getPotion(), attackerEffect.getDuration(), attackerEffect.getAmplifier()));
+			for(PotionEntry entry : attackerEffect) {
+				attacker.addPotionEffect(new PotionEffect(entry.getPotion(), entry.getDuration(), entry.getAmplifier()));
+			}
 		}
 		if(defenderEffect!=null) {
-			defender.addPotionEffect(new PotionEffect(defenderEffect.getPotion(), defenderEffect.getDuration(), defenderEffect.getAmplifier()));
+			for(PotionEntry entry : defenderEffect) {
+				defender.addPotionEffect(new PotionEffect(entry.getPotion(), entry.getDuration(), entry.getAmplifier()));
+			}
 		}
 	}
 	

@@ -12,7 +12,9 @@ import shieldbreak.core.ShieldBreak;
 import shieldbreak.util.PotionEntry;
 
 import javax.annotation.Nullable;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @Config(modid = ShieldBreak.MODID)
 public class ModConfig {
@@ -23,10 +25,10 @@ public class ModConfig {
 	
 	public static class ServerConfig{
 
-		private PotionEntry attackerParry = null;
-		private PotionEntry defenderParry = null;
-		private PotionEntry attackerBreak = null;
-		private PotionEntry defenderBreak = null;
+		private List<PotionEntry> attackerParry = null;
+		private List<PotionEntry> defenderParry = null;
+		private List<PotionEntry> attackerBreak = null;
+		private List<PotionEntry> defenderBreak = null;
 		@Config.Comment("Minimum amount of damage any shield will withstand before chance of cooldown.")
 		@Config.Name("Damage Minimum Threshold")
 		public float damageMinimumThreshold= 1.0F;
@@ -75,21 +77,33 @@ public class ModConfig {
 		@Config.Name("Always Reset Active Hand")
 		public boolean alwaysResetActiveHand= true;
 
-		@Config.Comment("Potion Effect to apply to an attacker on a parry. (Potion,Duration,Amplifier)")
+		@Config.Comment("Potion Effects to apply to an attacker on a parry. (Potion,Duration,Amplifier)")
 		@Config.Name("Potion Effect Attacker Parry")
-		public String potionEffectAttackerParry = "";
+		public String[] potionEffectAttackerParry = {""};
 
-		@Config.Comment("Potion Effect to apply to a defender on a parry. (Potion,Duration,Amplifier)")
+		@Config.Comment("Potion Effects to apply to a defender on a parry. (Potion,Duration,Amplifier)")
 		@Config.Name("Potion Effect Defender Parry")
-		public String potionEffectDefenderParry = "";
+		public String[] potionEffectDefenderParry = {""};
 
-		@Config.Comment("Potion Effect to apply to an attacker on a break. (Potion,Duration,Amplifier)")
+		@Config.Comment("Potion Effects to apply to an attacker on a break. (Potion,Duration,Amplifier)")
 		@Config.Name("Potion Effect Attacker Break")
-		public String potionEffectAttackerBreak = "";
+		public String[] potionEffectAttackerBreak = {""};
 
-		@Config.Comment("Potion Effect to apply to a defender on a break. (Potion,Duration,Amplifier)")
+		@Config.Comment("Potion Effects to apply to a defender on a break. (Potion,Duration,Amplifier)")
 		@Config.Name("Potion Effect Defender Break")
-		public String potionEffectDefenderBreak = "";
+		public String[] potionEffectDefenderBreak = {""};
+
+		@Config.Comment("Knockback power on parry.")
+		@Config.Name("Knockback Parry")
+		public float knockbackParry = 1.0F;
+
+		@Config.Comment("Knockback power on normal block.")
+		@Config.Name("Knockback Normal")
+		public float knockbackNormal = 0.5F;
+
+		@Config.Comment("Knockback power on break.")
+		@Config.Name("Knockback Break")
+		public float knockbackBreak = 0.25F;
 
 		public void resetEffectCache() {
 			attackerParry=null;
@@ -99,53 +113,59 @@ public class ModConfig {
 		}
 
 		@Nullable
-		public PotionEntry getEffectAttackerParry() {
+		public List<PotionEntry> getEffectAttackerParry() {
 			if(attackerParry!=null) return attackerParry;
-			if(!potionEffectAttackerParry.isEmpty()) {
-				attackerParry = getPotionEffectFromString(cleanEntry(potionEffectAttackerParry));
+			if(potionEffectAttackerParry.length > 0) {
+				attackerParry = getPotionEffectFromString(potionEffectAttackerParry);
 				return attackerParry;
 			}
 			return null;
 		}
 		@Nullable
-		public PotionEntry getEffectDefenderParry() {
+		public List<PotionEntry> getEffectDefenderParry() {
 			if(defenderParry!=null) return defenderParry;
-			if(!potionEffectDefenderParry.isEmpty()) {
-				defenderParry = getPotionEffectFromString(cleanEntry(potionEffectDefenderParry));
+			if(potionEffectDefenderParry.length > 0) {
+				defenderParry = getPotionEffectFromString(potionEffectDefenderParry);
 				return defenderParry;
 			}
 			return null;
 		}
 		@Nullable
-		public PotionEntry getEffectAttackerBreak() {
+		public List<PotionEntry> getEffectAttackerBreak() {
 			if(attackerBreak!=null) return attackerBreak;
-			if(!potionEffectAttackerBreak.isEmpty()) {
-				attackerBreak = getPotionEffectFromString(cleanEntry(potionEffectAttackerBreak));
+			if(potionEffectAttackerBreak.length > 0) {
+				attackerBreak = getPotionEffectFromString(potionEffectAttackerBreak);
 				return attackerBreak;
 			}
 			return null;
 		}
 		@Nullable
-		public PotionEntry getEffectDefenderBreak() {
+		public List<PotionEntry> getEffectDefenderBreak() {
 			if(defenderBreak!=null) return defenderBreak;
-			if(!potionEffectDefenderBreak.isEmpty()) {
-				defenderBreak = getPotionEffectFromString(cleanEntry(potionEffectDefenderBreak));
+			if(potionEffectDefenderBreak.length > 0) {
+				defenderBreak = getPotionEffectFromString(potionEffectDefenderBreak);
 				return defenderBreak;
 			}
 			return null;
 		}
 
 		@Nullable
-		private PotionEntry getPotionEffectFromString(String[] entry) {
+		private List<PotionEntry> getPotionEffectFromString(String[] entryList) {
 			try {
-				Potion potion = Potion.getPotionFromResourceLocation(entry[0]);
-				if(potion==null) {
-					ShieldBreak.logger.log(Level.WARN, "Invalid potion name: " + entry[0]);
-					return null;
+				List<PotionEntry> returnable = new ArrayList<PotionEntry>();
+				for(String entryUnclean : entryList) {
+					if(entryUnclean.isEmpty()) continue;
+					String[] entry = cleanEntry(entryUnclean);
+					Potion potion = Potion.getPotionFromResourceLocation(entry[0]);
+					if(potion==null) {
+						ShieldBreak.logger.log(Level.WARN, "Invalid potion name: " + entry[0]);
+						continue;
+					}
+					int duration = Integer.parseInt(entry[1]);
+					int amplifier = Integer.parseInt(entry[2]);
+					returnable.add(new PotionEntry(potion, duration, amplifier));
 				}
-				int duration = Integer.parseInt(entry[1]);
-				int amplifier = Integer.parseInt(entry[2]);
-				return new PotionEntry(potion, duration, amplifier);
+				return returnable.isEmpty() ? null : returnable;
 			}
 			catch(Exception ex) {
 				ShieldBreak.logger.log(Level.WARN, "Failed to parse config entry: " + ex);

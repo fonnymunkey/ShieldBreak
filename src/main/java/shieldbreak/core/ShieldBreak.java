@@ -13,7 +13,7 @@ import shieldbreak.core.proxies.CommonProxy;
 public class ShieldBreak
 {
     public static final String MODID = "shieldbreak";
-    public static final String VERSION = "1.1.0";
+    public static final String VERSION = "1.1.2";
     public static final String NAME = "ShieldBreak";
     public static final String PROXY = "shieldbreak.core.proxies";
     public static final String CHANNEL = "SHIELDBREAK";
