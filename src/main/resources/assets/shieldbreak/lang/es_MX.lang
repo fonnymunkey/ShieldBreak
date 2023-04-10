@@ -1,0 +1,42 @@
+tooltip.shieldbreak.shieldingpower=Poder de escudado:
+
+config.shieldbreak.server=Servidor
+config.shieldbreak.server.tooltip=Configuraciones del Servidor
+config.shieldbreak.server.damageMinimumThreshold=Umbral mínimo de daño
+config.shieldbreak.server.damageMinimumThreshold.tooltip=Cantidad mínima de daño que cualquier escudo soportará antes que se active la probabilidad de desactivado temporal.
+config.shieldbreak.server.damageMaximumThreshold=Umbral máximo de daño
+config.shieldbreak.server.damageMaximumThreshold.tooltip=Escalado de cuánto daño soportará un escudo antes que se active la probabilidad de desactivado temporal, basado en su durabilidad máxima.\n(Durabilidad/Este valor = Daño)
+config.shieldbreak.server.damageDurabilityScaling=Escalado de daño según durabilidad
+config.shieldbreak.server.damageDurabilityScaling.tooltip=Escalado de cuánto daño puede soportar un escudo antes del desactivado temporal, basado en su durabilidad máxima.\n(Durabilidad/Este valor = Daño)
+config.shieldbreak.server.cooldownTicksMinimum=Ticks mínimos de desactivado
+config.shieldbreak.server.cooldownTicksMinimum.tooltip=Tiempo mínimo de desactivado temporal que provocará la ruptura del escudo.\n(En ticks)
+config.shieldbreak.server.cooldownTicksMaximum=Ticks máximos de desactivado
+config.shieldbreak.server.cooldownTicksMaximum.tooltip=Tiempo máximo de desactivado temporal que provocará la ruptura del escudo.\n(En ticks)
+config.shieldbreak.server.cooldownTicksScaling=Escalado de ticks de desactivado
+config.shieldbreak.server.cooldownTicksScaling.tooltip=Multiplicador de ticks de desactivado, por punto de daño.
+config.shieldbreak.server.parryTickRange=Rango de ticks de rechazo
+config.shieldbreak.server.parryTickRange.tooltip=Cuánto tiempo puedes sostener el escudo y aún rechazar el ataque.\n(Contado después del retraso inicial del escudo, si lo hay)
+config.shieldbreak.server.unbreakableShieldDurability=Ajuste de durabilidad de escudo
+config.shieldbreak.server.unbreakableShieldDurability.tooltip=Cuánta durabilidad debería tener un escudo (para propósitos de escalado) si su durabilidad máxima es 0.
+config.shieldbreak.server.shieldRaiseTickDelay=Demora al alzar escudo
+config.shieldbreak.server.shieldRaiseTickDelay.tooltip=Cuántos ticks son necesarios al alzar el escudo para que se considere activo.
+config.shieldbreak.server.shieldBypassChance=Probabilidad de Ignorar escudo
+config.shieldbreak.server.shieldBypassChance.tooltip=Probabilidad base para que un arma pueda romper escudos, ignorar la protección del escudo y provocar su desactivado.\n(Como el Hacha y Alabarda)
+config.shieldbreak.server.shieldBypassCooldown=Desactivado al ignorar escudo
+config.shieldbreak.server.shieldBypassCooldown.tooltip=Cuánto debería durar el desactivado de escudo si un arma que puede romper escudos ignora el escudo.\n(Como el Hacha y Alabarda)
+config.shieldbreak.server.alwaysResetActiveHand=Siempre resetear mano activa
+config.shieldbreak.server.alwaysResetActiveHand.tooltip=Siempre resetear la mano activa después de un golpe al escudo?\n(Corrige un exploit al usar la interfaz handheld mientras te escudas)
+config.shieldbreak.server.potionEffectAttackerParry=Efectos al atacante por rechazo
+config.shieldbreak.server.potionEffectAttackerParry.tooltip=Efectos de poción a aplicar al atacante durante el rechazo.\n(Poción,Duración,Amplificador)\nEjemplo: minecraft:slowness,40,2
+config.shieldbreak.server.potionEffectDefenderParry=Efectos al defensor por rechazo
+config.shieldbreak.server.potionEffectDefenderParry.tooltip=Efectos de poción a aplicar al defensor durante el rechazo.\n(Poción,Duración,Amplificador)\nEjemplo: minecraft:speed,40,2
+config.shieldbreak.server.potionEffectAttackerBreak=Efectos al atacante por ruptura
+config.shieldbreak.server.potionEffectAttackerBreak.tooltip=Efectos de poción a aplicar al atacante durante la ruptura.\n(Poción,Duración,Amplificador)\nEjemplo: minecraft:speed,40,2
+config.shieldbreak.server.potionEffectDefenderBreak=Efectos al defensor por ruptura
+config.shieldbreak.server.potionEffectDefenderBreak.tooltip=Efectos de poción a aplicar al defensor durante la ruptura.\n(Poción,Duración,Amplificador)\nEjemplo: minecraft:slowness,40,2
+config.shieldbreak.server.knockbackParry=Empuje al rechazar
+config.shieldbreak.server.knockbackParry.tooltip=Poder de empuje al rechazar.
+config.shieldbreak.server.knockbackNormal=Empuje normal
+config.shieldbreak.server.knockbackNormal.tooltip=Poder de empuje al hacer un bloqueo normal.
+config.shieldbreak.server.knockbackBreak=Empuje al romper
+config.shieldbreak.server.knockbackBreak.tooltip=Poder de empuje cuando se rompe el escudo.
