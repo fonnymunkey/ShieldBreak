@@ -1,5 +1,6 @@
 package shieldbreak.handlers;
 
+import net.minecraft.client.resources.I18n;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -115,7 +116,7 @@ public class EventHandler
 		float shieldProtection = Math.max(ModConfig.server.damageMinimumThreshold, Math.min(ModConfig.server.damageMaximumThreshold, shieldDurability/ModConfig.server.damageDurabilityScaling));
 		double shieldProtectionRounded = ((double)((int)(shieldProtection*100)))/100D;
 		
-        event.getToolTip().add(TextFormatting.GREEN + "Shielding Power: " + shieldProtectionRounded + TextFormatting.RESET);
+        event.getToolTip().add(TextFormatting.GREEN + I18n.format("tooltip.shieldbreak.shieldingpower") + " " + shieldProtectionRounded + TextFormatting.RESET);
 	}
 
 	private void doPotionEffects(EntityLivingBase attacker, EntityLivingBase defender, boolean parry) {
