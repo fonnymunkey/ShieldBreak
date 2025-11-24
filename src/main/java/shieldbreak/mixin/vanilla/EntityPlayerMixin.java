@@ -14,9 +14,11 @@ import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import shieldbreak.handlers.ModConfig;
 import shieldbreak.util.IEntityPlayerMixin;
 import shieldbreak.util.PotionEntry;
@@ -40,12 +42,14 @@ public abstract class EntityPlayerMixin extends EntityLivingBase implements IEnt
 		this.shieldbreak$currentAttackDamage = damage;
 	}
 	
-	/**
-	 * @author fonnymunkey
-	 * @reason shieldbreak handling
-	 */
-	@Overwrite
-	protected void blockUsingShield(EntityLivingBase attacker) {
+	@Inject(
+			method = "blockUsingShield",
+			at = @At("HEAD"),
+			cancellable = true
+	)
+	private void shieldbreak_vanillaEntityPlayer_blockUsingShield(EntityLivingBase attacker, CallbackInfo ci) {
+		ci.cancel();
+		
 		ItemStack playerItem = this.isHandActive() ? this.getActiveItemStack() : ItemStack.EMPTY;
 		if(!(playerItem.getItem() instanceof ItemShield)) return;//If shield item is broken after damage, block attack but don't do additional effects
 		

@@ -1,7 +1,7 @@
 {
   "required": true,
   "package": "shieldbreak.mixin",
-  "refmap": "mixins.fermiummixins.refmap.json",
+  "refmap": "mixins.shieldbreak.refmap.json",
   "compatibilityLevel": "JAVA_8",
   "target": "@env(DEFAULT)",
   "minVersion": "0.8",
