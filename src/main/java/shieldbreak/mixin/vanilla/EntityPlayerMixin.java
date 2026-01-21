@@ -51,7 +51,7 @@ public abstract class EntityPlayerMixin extends EntityLivingBase implements IEnt
 		ci.cancel();
 		
 		ItemStack playerItem = this.isHandActive() ? this.getActiveItemStack() : ItemStack.EMPTY;
-		if(!(playerItem.getItem() instanceof ItemShield)) return;//If shield item is broken after damage, block attack but don't do additional effects
+		if(!(playerItem.getItem().isShield(playerItem, this) || playerItem.getItem() instanceof ItemShield)) return;//If shield item is broken after damage, block attack but don't do additional effects
 		
 		//Weapon breaks shields
 		ItemStack attackerItem = attacker.getHeldItem(attacker.getActiveHand());
