@@ -3,6 +3,7 @@ package shieldbreak.handlers;
 import net.minecraft.client.resources.I18n;
 import net.minecraft.item.ItemShield;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.text.TextFormatting;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.fml.common.eventhandler.EventPriority;
@@ -19,8 +20,13 @@ public class TooltipHandler {
 		ItemStack itemStack = event.getItemStack();
 		if(!(itemStack.getItem().isShield(itemStack, null) || itemStack.getItem() instanceof ItemShield)) return;
 		
-		float shieldDurability = (float)((itemStack.getMaxDamage() > 0) ? itemStack.getMaxDamage() : ModConfig.server.unbreakableShieldDurability);
-		float shieldProtection = Math.max(ModConfig.server.damageMinimumThreshold, Math.min(ModConfig.server.damageMaximumThreshold, shieldDurability / ModConfig.server.damageDurabilityScaling));
+		Float shieldProtectionOverride = itemStack.getItem().getRegistryName() != null ? ModConfig.server.shieldingPowerOverrides.get(itemStack.getItem().getRegistryName().toString()) : null;
+		float shieldProtection;
+		if(shieldProtectionOverride != null) shieldProtection = shieldProtectionOverride;
+		else {
+			float shieldDurability = (float)((itemStack.getMaxDamage() > 0) ? itemStack.getMaxDamage() : ModConfig.server.unbreakableShieldDurability);
+			shieldProtection = MathHelper.clamp(shieldDurability/ModConfig.server.damageDurabilityScaling, ModConfig.server.damageMinimumThreshold, ModConfig.server.damageMaximumThreshold);
+		}
 		double shieldProtectionRounded = ((double)((int)(shieldProtection * 100))) / 100D;
 		
         event.getToolTip().add(TextFormatting.GREEN + I18n.format("tooltip.shieldbreak.shieldingpower") + " " + shieldProtectionRounded + TextFormatting.RESET);
