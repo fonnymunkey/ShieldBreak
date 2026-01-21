@@ -12,6 +12,7 @@ import net.minecraft.network.play.server.SPacketEntityVelocity;
 import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.CooldownTracker;
 import net.minecraft.util.SoundCategory;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -67,8 +68,13 @@ public abstract class EntityPlayerMixin extends EntityLivingBase implements IEnt
 		}
 		
 		int parryTicks = this.getItemInUseMaxCount();
-		float shieldDurability = (float)((playerItem.getMaxDamage() > 0) ? playerItem.getMaxDamage() : ModConfig.server.unbreakableShieldDurability);
-		float shieldProtection = Math.max(ModConfig.server.damageMinimumThreshold, Math.min(ModConfig.server.damageMaximumThreshold, shieldDurability/ModConfig.server.damageDurabilityScaling));
+		Float shieldProtectionOverride = playerItem.getItem().getRegistryName() != null ? ModConfig.server.shieldingPowerOverrides.get(playerItem.getItem().getRegistryName().toString()) : null;
+		float shieldProtection;
+		if(shieldProtectionOverride != null) shieldProtection = shieldProtectionOverride;
+		else {
+			float shieldDurability = (float)((playerItem.getMaxDamage() > 0) ? playerItem.getMaxDamage() : ModConfig.server.unbreakableShieldDurability);
+			shieldProtection = MathHelper.clamp(shieldDurability/ModConfig.server.damageDurabilityScaling, ModConfig.server.damageMinimumThreshold, ModConfig.server.damageMaximumThreshold);
+		}
 		float knockbackPower = ModConfig.server.knockbackNormal;
 		boolean parry = false;
 		boolean broken = false;

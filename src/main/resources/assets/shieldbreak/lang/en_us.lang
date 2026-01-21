@@ -40,3 +40,5 @@ config.shieldbreak.server.knockbackNormal=Knockback Normal
 config.shieldbreak.server.knockbackNormal.tooltip=Knockback power on normal block.
 config.shieldbreak.server.knockbackBreak=Knockback Break
 config.shieldbreak.server.knockbackBreak.tooltip=Knockback power on break.
+config.shieldbreak.server.shieldingPowerOverrides=Shielding Power Overrides
+config.shieldbreak.server.shieldingPowerOverrides.tooltip=Use this to define shielding power by itemid. Pattern: D:"modid:itemid"=1.0
