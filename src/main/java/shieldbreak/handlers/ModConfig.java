@@ -15,6 +15,8 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.HashMap;
 
 @Config(modid = ShieldBreak.MODID)
 public class ModConfig {
@@ -124,6 +126,11 @@ public class ModConfig {
 		@Config.Name("Knockback Break")
 		@Config.LangKey("config.shieldbreak.server.knockbackBreak")
 		public float knockbackBreak = 0.25F;
+
+		@Config.Comment("Use this to define shielding power by itemid. Pattern: D:\"modid:itemid\"=1.0")
+		@Config.Name("Shielding Power Overrides")
+		@Config.LangKey("config.shieldbreak.server.shieldingPowerOverrides")
+		public Map<String, Float> shieldingPowerOverrides = new HashMap<>();
 
 		public void resetEffectCache() {
 			attackerParry=null;
